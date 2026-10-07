@@ -73,9 +73,9 @@ export default function Sidebar() {
             <span className="font-bold text-[17px] tracking-tight !text-white block">
               Aether
             </span>
-            <span className="sidebar-sub-title mt-1 text-[10px] uppercase tracking-[0.16em] font-semibold block text-slate-400">
+            {/* <span className="sidebar-sub-title mt-1 text-[10px] uppercase tracking-[0.16em] font-semibold block text-slate-400">
               Requirements Workspace
-            </span>
+            </span> */}
           </div>
         </div>
 
