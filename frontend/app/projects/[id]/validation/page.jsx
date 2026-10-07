@@ -306,7 +306,7 @@ export default function ValidationPage() {
                       {/* Top bar: ID, Title, Status & Actions */}
                       <div className="flex items-center justify-between flex-wrap gap-2">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <span className="font-mono font-bold text-xs text-brand-400 bg-brand-500/10 px-2 py-0.5 rounded border border-brand-500/20">
+                          <span className="font-mono font-bold text-xs text-sky-600 bg-sky-100 px-2 py-0.5 rounded border border-sky-300">
                             {req.requirementId}
                           </span>
                           <span className="font-bold text-sm text-white">{req.title}</span>
@@ -344,8 +344,8 @@ export default function ValidationPage() {
                               <div
                                 key={key}
                                 className={`px-2.5 py-1.5 rounded-lg border text-[11px] font-bold flex items-center justify-between ${passed
-                                    ? 'bg-emerald-100 border-emerald-300 text-emerald-950'
-                                    : 'bg-rose-100 border-rose-300 text-rose-950'
+                                  ? 'bg-emerald-100 border-emerald-300 text-emerald-950'
+                                  : 'bg-rose-100 border-rose-300 text-rose-950'
                                   }`}
                               >
                                 <span>{label}</span>

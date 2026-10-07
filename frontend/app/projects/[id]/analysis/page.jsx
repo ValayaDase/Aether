@@ -233,7 +233,7 @@ export default function AnalysisPage() {
                         {iss.status === 'OPEN' ? (
                           <button
                             onClick={() => setActiveIssue(iss)}
-                            className="px-3.5 py-1.5 bg-brand-500/10 hover:bg-brand-500/20 text-brand-300 border border-brand-500/30 text-xs font-semibold rounded-lg transition-colors flex items-center gap-1"
+                            className="px-3.5 py-1.5 bg-brand-100 hover:bg-brand-200 text-brand-700 border border-brand-300 text-xs font-semibold rounded-lg transition-colors flex items-center gap-1"
                           >
                             Resolve Issue
                           </button>
