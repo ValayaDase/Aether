@@ -19,10 +19,22 @@ An enterprise AI-powered Software Requirements Engineering platform adhering str
    - 5-Tier bidirectional traceability matrix.
    - Semantic diff viewer for continuous versioning (v1.0 → v1.1).
 
+## 📚 Research Papers & Academic Foundation
+
+The architectural design of Aether AI is research-informed by three peer-reviewed literature publications:
+1. **Paper 1**: *"Using LLMs in Software Requirements Specifications: An Empirical Evaluation"* — Zero-hallucination prompting, human-in-the-loop validation, and context tuning.
+2. **Paper 2**: *"REQINONE: A Large Language Model-Based Agent for Software Requirements Specification Generation"* — Multi-agent elicitation, FR vs NFR 7-tier categorization, and trace-to-source evidence linking.
+3. **Paper 3**: *"A Framework for Structurally Deterministic Pipeline Based Drafting and Quality Improvement of SRS Using Language Models and Reinforcement Learning"* — Sentence embeddings, K-Means semantic topic clustering, deterministic section mapping, and incremental SRS updating.
+
+📄 **Comprehensive Technical Documentation & PDF:**
+- 📘 [PROJECT_RESEARCH_ALGORITHMS_AND_ARCHITECTURE.md](file:///c:/shubham%20dalvi%20project/Major_project_2026/PROJECT_RESEARCH_ALGORITHMS_AND_ARCHITECTURE.md) (Full Technical Specification)
+- 📑 [Aether_AI_Research_and_Algorithm_Architecture.pdf](file:///c:/shubham%20dalvi%20project/Major_project_2026/Aether_AI_Research_and_Algorithm_Architecture.pdf) (Generated Technical Report PDF)
+
 ## 🛠️ Tech Stack
-- **Frontend**: Next.js (App Router), Vanilla CSS, Lucide Icons
-- **Backend**: Express.js, MongoDB (Mongoose), Ollama AI Provider (CodeLlama / Gemma)
-- **Embeddings**: 384-dimensional vector embeddings with cosine similarity
+- **Frontend**: Next.js (App Router), Vanilla CSS, Tailwind CSS, Lucide Icons
+- **Backend**: Express.js, MongoDB (Mongoose), In-Memory DB Fallback, Ollama AI Provider (CodeLlama / Gemma)
+- **Neural Embeddings**: `Xenova/multilingual-e5-small` (384-dimensional dense vectors in ONNX Runtime)
+- **Document Export**: PDFKit (`pdfkit`), Docx (`docx`)
 
 ## 🏁 Quick Start
 
@@ -39,3 +51,9 @@ cd frontend
 npm install
 npm run dev
 ```
+
+### 3. Generate Research Architecture PDF
+```bash
+node backend/src/scripts/generateReportPdf.js
+```
+

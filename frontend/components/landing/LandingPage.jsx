@@ -1014,10 +1014,10 @@ export default function LandingPage() {
 
             <div data-reveal>
 
-              <div className="lp-eyebrow">
+              {/* <div className="lp-eyebrow">
                 <span className="lp-eyebrow-dot" />
                 Requirements Engineering Platform
-              </div>
+              </div> */}
 
               <h1>
                 Turn project conversations into
