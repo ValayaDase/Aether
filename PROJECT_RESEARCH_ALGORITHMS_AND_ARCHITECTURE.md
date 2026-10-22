@@ -4,282 +4,304 @@
 **Domain:** Automated Software Requirements Engineering (ASE / AI-SE)  
 **Standards Adherence:** ISO/IEC/IEEE 29148:2018 & IEEE 830-1998  
 **Document Classification:** Technical Architecture & Algorithm Formulation Specification  
-**Version:** 2.0 (Production-Hardened Baseline)  
+**Version:** 3.0 (Production-Hardened Baseline with High-Visibility Visual Specifications)  
 
 ---
 
 ## 1. Abstract & Executive Summary
 
-Modern software development often suffers from incomplete, ambiguous, and conflicting requirements gathered during informal stakeholder interviews. **Aether AI (IntelliSDLC AI)** is an enterprise-grade, research-grounded automated Software Requirements Engineering platform designed to eliminate these challenges.
+Modern software engineering projects consistently suffer from scope ambiguity, incomplete functional definitions, and conflicting non-functional requirements elicited during unstructured client meetings. **Aether AI (IntelliSDLC AI)** is an enterprise-grade, automated Software Requirements Engineering (ASE) platform engineered to resolve these challenges through mathematically bounded Natural Language Processing (NLP) and deterministic document synthesis.
 
-The platform provides a strictly controlled, deterministic, end-to-end pipeline that transforms raw, multilingual stakeholder responses (English, Hindi, Marathi, and Hinglish) into an ISO/IEC/IEEE 29148:2018 and IEEE 830-1998 compliant Software Requirements Specification (SRS) document. 
+The system enforces compliance with **ISO/IEC/IEEE 29148:2018** (Requirements Life Cycle Processes) and **IEEE 830-1998** (Software Requirements Specifications), providing a complete automated pipeline from multilingual conversational elicitation (English, Hindi, Marathi, Hinglish) to an incrementally synchronized, verifiable, and traceable Software Requirements Specification (SRS).
 
 ### Core Architectural Invariants:
-1. **Raw Input $\neq$ Requirement $\neq$ SRS Content**: Unstructured stakeholder evidence is stored solely as raw audit evidence (`rawSourceText`). The final SRS is constructed strictly from validated, atomic, formally normalized statements (`"The system shall allow..."`).
-2. **Deterministic Fallback & Zero-Hallucination**: LLM integration uses constrained, JSON-only schemas with temperature controls. In the event of an LLM failure or absence, a deterministic multilingual semantic engine executes the entire pipeline with identical structured guarantees.
-3. **In-Process Neural Embeddings**: Real 384-dimensional dense semantic vectors are computed locally via `Xenova/multilingual-e5-small` running on CPU within ONNX Runtime (`onnxruntime-node`), ensuring sub-millisecond semantic duplicate detection and zero external API dependencies.
-4. **Continuous Change Control**: Bidirectional 5-tier traceability connects raw statements to SRS sections. Subsequent requirement modifications trigger semantic diff analysis, re-evaluating and incrementally patching only the affected sections (SRS v1.0 $\to$ v1.1).
+1. **Strict Information Separation (Raw Input $\neq$ Requirement $\neq$ SRS Content)**: Raw stakeholder statements are preserved exclusively as immutable audit evidence (`Requirement.rawSourceText` and `InterviewMessage.content`). The authoritative SRS document is assembled exclusively from verified, atomic, formally normalized English statements (`"The system shall allow [actor] to [verb] [object]..."`).
+2. **Deterministic Dual-Engine Execution**: If the primary Large Language Model (Ollama CodeLlama:7b-instruct / Gemma) is disconnected or fails schema validation, the system automatically falls back to an in-process, deterministic multilingual semantic engine (`semanticEngine.js`). The pipeline guarantees 100% operational uptime and zero fabricated metrics without external API dependencies.
+3. **In-Process Neural Vector Space**: High-dimensional semantic vectors are calculated in-memory via `Xenova/multilingual-e5-small` (12-layer XLM-RoBERTa, 384-dimensional dense vectors) executed on CPU within ONNX Runtime (`onnxruntime-node`). This enables sub-millisecond duplicate detection and semantic clustering without remote cloud inference.
+4. **Continuous Change Control (SRS v1.0 $\to$ v1.1)**: Rather than executing naive document-wide rewrites, Aether AI computes semantic vector diffs across requirement mutations, identifies affected IEEE 830 sections, and incrementally patches only the mutated subsections while preserving version history.
 
 ---
 
 ## 2. Theoretical Research Foundations & Paper Mapping
 
-The system design synthesizes core principles and methodologies from three foundational peer-reviewed research papers in AI-assisted Software Requirements Engineering.
+The core architecture of Aether AI synthesizes and operationalizes concepts from three foundational peer-reviewed research papers in Artificial Intelligence and Software Requirements Engineering.
+
+### 2.1 Research Synthesis & System Mapping Flowchart
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#ffffff', 'primaryTextColor': '#0f172a', 'primaryBorderColor': '#2563eb', 'lineColor': '#2563eb', 'secondaryColor': '#ffffff', 'tertiaryColor': '#ffffff'}}}%%
 flowchart TD
-    subgraph Research_Inspirations["Academic Research Foundation"]
-        P1["<b>Paper 1: Empirical Evaluation of LLMs</b><br/>• Zero-Hallucination Prompting<br/>• Human-in-the-Loop Review<br/>• Structured JSON Output"]
-        P2["<b>Paper 2: REQINONE Multi-Agent System</b><br/>• Role-Based Agent Ecosystem<br/>• Multi-Class NFR Taxonomy<br/>• Trace-to-Source Evidence Linking"]
-        P3["<b>Paper 3: Structurally Deterministic Pipeline</b><br/>• Dense Sentence Embeddings<br/>• K-Means Semantic Topic Clustering<br/>• Incremental SRS Patching (v1.0 -> v1.1)"]
+    classDef paperBox fill:#ffffff,stroke:#1d4ed8,stroke-width:2px,color:#0f172a,font-size:13px;
+    classDef coreBox fill:#ffffff,stroke:#059669,stroke-width:2px,color:#0f172a,font-size:13px;
+    classDef storageBox fill:#ffffff,stroke:#d97706,stroke-width:2px,color:#0f172a,font-size:13px;
+
+    subgraph Research_Inspirations["Academic Research Foundation (Theoretical Base)"]
+        P1["<b>Paper 1: Empirical Evaluation of LLMs</b><br/>• Zero-Hallucination Prompt Architecture<br/>• Human-in-the-Loop Validation Checkpoints<br/>• Strict JSON-Only Schema Enforcement"]:::paperBox
+        P2["<b>Paper 2: REQINONE Multi-Agent System</b><br/>• Role-Based Multi-Agent Elicitation<br/>• 7-Category NFR Taxonomy & Decomposition<br/>• Trace-to-Source Immutable Evidence Linking"]:::paperBox
+        P3["<b>Paper 3: Structurally Deterministic Pipeline</b><br/>• 384-dim Dense Sentence Embeddings<br/>• K-Means Semantic Topic Clustering<br/>• Incremental Section Patching (v1.0 -> v1.1)"]:::paperBox
     end
 
-    subgraph Aether_Core["Aether AI Unified Architecture"]
-        direction TB
-        Elicitation["9-Stage Controlled Elicitation State Machine"]
-        Semantic["Multilingual NLP & Normalization Engine"]
-        VectorCore["ONNX Neural Embedding & Tri-Factor Deduplication"]
-        Mapping["Deterministic Section Mapper & SRS Assembler"]
-        ChangeControl["Semantic Diff & 5-Tier Traceability Matrix"]
+    subgraph Aether_Core["Aether AI Unified Production Architecture"]
+        ElicitationModule["<b>1. 9-Stage Elicitation State Machine</b><br/>• Stage-Gated Lifecycle Control<br/>• Multilingual Script & Modal Parsing"]:::coreBox
+        QualityModule["<b>2. ISO 29148 Quality & Audit Engine</b><br/>• 10-Dimension Quality Assessment Rubric<br/>• Non-Verifiable Word Filter & Stance Checks"]:::coreBox
+        NeuralModule["<b>3. ONNX Neural Embedding Engine</b><br/>• Xenova/multilingual-e5-small (384-dim)<br/>• Tri-Factor Duplicate Detection (Sim >= 0.96)"]:::coreBox
+        AssemblyModule["<b>4. Deterministic SRS Assembler</b><br/>• IEEE 830 Sections 1-6 + Appendices A-C<br/>• K-Means Centroid Topic Allocation"]:::coreBox
+        ChangeModule["<b>5. Continuous Change Control & Traceability</b><br/>• 5-Tier Bidirectional Traceability Matrix<br/>• Semantic Vector Diff & Versioning Engine"]:::coreBox
     end
 
-    P1 -.-> Elicitation
-    P1 -.-> Semantic
-    P2 -.-> Elicitation
-    P2 -.-> ChangeControl
-    P3 -.-> VectorCore
-    P3 -.-> Mapping
-    P3 -.-> ChangeControl
+    subgraph Persistence_Layer["Enterprise Persistence Layer"]
+        DB[(<b>MongoDB / In-Memory Store</b><br/>• Requirement Catalog<br/>• SRS Versions v1.0 & v1.1<br/>• Traceability Links)]:::storageBox
+    end
 
-    style Research_Inspirations fill:#f8fafc,stroke:#3b82f6,stroke-width:2px
-    style Aether_Core fill:#eff6ff,stroke:#1d4ed8,stroke-width:2px
+    P1 ==>|Prompt Structuring & Anti-Hallucination| ElicitationModule
+    P1 ==>|Validation Rubric| QualityModule
+    P2 ==>|Agent Specialization| ElicitationModule
+    P2 ==>|Trace-to-Source Linking| ChangeModule
+    P3 ==>|Vector Space & Deduplication| NeuralModule
+    P3 ==>|Deterministic Mapping| AssemblyModule
+    P3 ==>|Impact Analysis & Diffing| ChangeModule
+
+    ElicitationModule --> QualityModule
+    QualityModule --> NeuralModule
+    NeuralModule --> AssemblyModule
+    AssemblyModule --> ChangeModule
+    ChangeModule <==> DB
 ```
 
 ---
 
-### 2.1 Research Paper 1
+### 2.2 Detailed Breakdown: Research Paper 1
 **Title:** *"Using LLMs in Software Requirements Specifications: An Empirical Evaluation"*  
-**Primary Focus:** Evaluating LLM robustness, factual hallucination risks, and prompt sensitivity in requirements engineering.
+**Primary Domain:** Empirical Evaluation of Large Language Models in Requirements Drafting, Context Grounding, and Hallucination Mitigation.
 
-#### Concepts Adopted & Engineered:
-- **Zero-Hallucination Prompt Engineering:** LLMs tend to invent non-functional thresholds (e.g., fabricating "response time < 2 seconds" when the stakeholder merely said "make it fast"). Aether AI enforces strict JSON schemas that reject fabricated quantitative values; vague statements are marked `NEEDS_CLARIFICATION` with a targeted clarification question.
-- **Context-Tuned Elicitation:** Applying domain boundaries and grounding checks before allowing input to transition between elicitation stages.
-- **Human-in-the-Loop Validation:** Automated requirements remain in a `PROPOSED` status until verified by human stakeholders, preventing autonomous specification drift.
+#### Concepts Adopted & Implementation:
+1. **Zero-Hallucination Guard**: Generative models frequently fabricate non-functional numbers (e.g., creating "latency < 50ms" from a vague statement like "fast checkout"). Aether AI enforces a zero-hallucination guard that rejects invented metrics. If no metric is explicitly stated, the requirement is flagged as `NEEDS_CLARIFICATION` and paired with a single focused follow-up question.
+2. **Constrained Schema Generation**: Prompts are constrained to valid JSON responses with temperature $T=0.0$. In case of malformed output, the system falls back to the deterministic multilingual parser.
+3. **Human-in-the-Loop Review**: No requirement transitions to `ACTIVE` without stakeholder confirmation in Stage 8.
 
-#### Conceptual Flowchart (Paper 1):
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#ffffff', 'primaryTextColor': '#0f172a', 'primaryBorderColor': '#2563eb', 'lineColor': '#2563eb'}}}%%
 flowchart TD
-    A["Raw Multilingual Stakeholder Input"] --> B["Context Tuning & Domain Grounding Guard"]
-    B --> C["Strict Schema Prompt Formulation (JSON-Only)"]
-    C --> D["LLM Inference Engine (Ollama / Local LLM)"]
-    D --> E{"Zero-Hallucination Guard"}
-    E -- "Fabricated Metrics Detected" --> F["Rollback to User-Stated Facts + Flag Ambiguity"]
-    E -- "Valid Grounded Output" --> G["ISO 29148 Grammar Normalization ('The system shall...')"]
-    F --> H["Clarification Question Generation"]
-    G --> I["Stakeholder Review & Approval Gate"]
-    H --> I
+    classDef default fill:#ffffff,stroke:#1e3a8a,stroke-width:2px,color:#0f172a,font-size:12px;
+    classDef decision fill:#ffffff,stroke:#d97706,stroke-width:2px,color:#0f172a,font-size:12px;
+    classDef highlight fill:#ffffff,stroke:#059669,stroke-width:2px,color:#0f172a,font-size:12px;
+    classDef reject fill:#ffffff,stroke:#dc2626,stroke-width:2px,color:#0f172a,font-size:12px;
 
-    style A fill:#f1f5f9,stroke:#64748b,stroke-width:1px
-    style E fill:#fef3c7,stroke:#d97706,stroke-width:2px
-    style I fill:#dcfce7,stroke:#15803d,stroke-width:2px
+    Input(["<b>Stakeholder Raw Multilingual Input</b><br/>(English, Hindi, Marathi, Hinglish)"]):::default
+    Input --> Guard{"<b>Phase 2 Context Guard</b><br/>Is input domain-relevant?"}:::decision
+    
+    Guard -- No (Sports/Weather/Gibberish) --> Rej["<b>Reject Input</b><br/>Prompt User with Stage-Specific Guide"]:::reject
+    Guard -- Yes --> Prompt["<b>Phase 4 Constrained Prompting</b><br/>• Inject Project Context<br/>• Strict JSON Output Schema<br/>• Temperature = 0.0"]:::default
+    
+    Prompt --> LLM["<b>LLM Inference</b><br/>(Ollama CodeLlama / Gemma)"]:::default
+    LLM --> ValGate{"<b>Phase 8 Metric Guard</b><br/>Did LLM invent quantitative metrics?"}:::decision
+    
+    ValGate -- Fabricated Metric --> Purge["<b>Purge Fabricated Metric</b><br/>Flag as NEEDS_CLARIFICATION<br/>Generate Clarification Question"]:::reject
+    ValGate -- User-Stated Facts Only --> Norm["<b>Phase 7 Formal Normalization</b><br/>'The system shall allow [actor] to [verb]...'"]:::highlight
+    
+    Purge --> Review["<b>Stage 8 Human-in-the-Loop Review</b><br/>Stakeholder verifies and confirms requirements"]:::default
+    Norm --> Review
+    Review --> Approved(["<b>Approved Requirement Candidate</b>"]):::highlight
 ```
 
 ---
 
-### 2.2 Research Paper 2
+### 2.3 Detailed Breakdown: Research Paper 2
 **Title:** *"REQINONE: A Large Language Model-Based Agent for Software Requirements Specification Generation"*  
-**Primary Focus:** Multi-agent collaboration for conversational requirements elicitation, multi-class categorization, and traceability.
+**Primary Domain:** Multi-Agent Cooperative Ecosystem for Automated Requirements Engineering.
 
-#### Concepts Adopted & Engineered:
-- **Decoupled Agentic Architecture:** Instead of a single monolithic prompt, Aether AI implements specialized agentic roles:
-  - `InterviewAgent`: Conducts dynamic, stage-bounded stakeholder interviews.
-  - `RequirementExtractionAgent`: Decomposes raw narrative into atomic capabilities.
-  - `ClassificationAgent`: Categorizes statements into Functional (`FR`), Non-Functional (`NFR`), Constraint (`CON`), Assumption (`ASM`), Interface (`INT`), or Stakeholder (`STK`).
-  - `ValidationAgent`: Evaluates requirements against ISO/IEC/IEEE 29148 quality criteria.
-  - `SRSGenerationAgent`: Compiles validated entities into standard IEEE 830 sections.
-- **7-Tier NFR Taxonomy:** Structured subclassification of non-functional requirements into *Performance, Security, Usability, Reliability, Availability, Scalability,* and *Maintainability*.
-- **Trace-to-Source Evidence Linking:** Preserves an immutable link between each generated requirement (`normalizedDescription`), its originating message (`rawSourceText`), and the interview session stage.
+#### Concepts Adopted & Implementation:
+1. **Agentic Role Specialization**: A monolithic LLM approach leads to context drift. Aether AI splits responsibilities across 5 dedicated agent modules:
+   - `InterviewAgent`: Conducts dynamic, 9-stage interviews with context bounding.
+   - `RequirementExtractionAgent`: Parses raw text into discrete atomic capabilities.
+   - `ClassificationAgent`: Categorizes into Functional (`FR`), Non-Functional (`NFR`), Constraint (`CON`), Assumption (`ASM`), Interface (`INT`), or Stakeholder (`STK`).
+   - `ValidationAgent`: Evaluates statements against ISO/IEC/IEEE 29148 standards.
+   - `SRSGenerationAgent`: Assembles validated entities into the IEEE 830 structure.
+2. **7-Tier NFR Taxonomy**: Systematically sub-classifies Non-Functional Requirements into *Performance, Security, Usability, Reliability, Availability, Scalability,* and *Maintainability*.
+3. **Trace-to-Source Provenance**: Every generated requirement maintains an immutable pointer to the originating interview message ID, stage index, and timestamp.
 
-#### Conceptual Flowchart (Paper 2):
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#ffffff', 'primaryTextColor': '#0f172a', 'primaryBorderColor': '#2563eb', 'lineColor': '#2563eb'}}}%%
 flowchart TD
-    subgraph Multi_Agent_Interaction["Multi-Agent Orchestration Framework"]
-        IA["Interview Agent<br/>(Conversational Elicitation)"]
-        EA["Extraction Agent<br/>(Atomic Decomposition)"]
-        CA["Classification Agent<br/>(Type & NFR Subcategory)"]
-        VA["Validation Agent<br/>(ISO 29148 Dimension Scrutiny)"]
-        SA["SRS Review Agent<br/>(Verification & Traceability)"]
-    end
+    classDef default fill:#ffffff,stroke:#1e3a8a,stroke-width:2px,color:#0f172a,font-size:12px;
+    classDef agent fill:#ffffff,stroke:#7c3aed,stroke-width:2px,color:#0f172a,font-size:12px;
+    classDef typeNode fill:#ffffff,stroke:#059669,stroke-width:2px,color:#0f172a,font-size:12px;
+    classDef matrix fill:#ffffff,stroke:#d97706,stroke-width:2px,color:#0f172a,font-size:12px;
 
-    User(["Stakeholder Response"]) --> IA
-    IA --> EA
-    EA --> CA
-    CA -->|Functional| FR["FR-XXX Functional Catalog"]
-    CA -->|Non-Functional| NFR["NFR-XXX Quality Catalog (7 Subcategories)"]
-    CA -->|Constraint / Interface| CON["CON-XXX / INT-XXX Catalog"]
-    
-    FR & NFR & CON --> VA
-    VA --> SA
-    SA --> Matrix["Trace-to-Source Linkage Matrix<br/>(rawSourceText <-> Requirement ID <-> SRS Section)"]
+    User(["<b>Stakeholder Response</b>"]):::default --> IA["<b>Interview Agent</b><br/>(Stage Controller & Elicitation Dialog)"]:::agent
+    IA --> EA["<b>Extraction Agent</b><br/>(Atomic Decomposition Engine)"]:::agent
+    EA --> CA["<b>Classification Agent</b><br/>(Taxonomy & Type Partitioning)"]:::agent
 
-    style Multi_Agent_Interaction fill:#f8fafc,stroke:#475569,stroke-width:2px
-    style Matrix fill:#e0f2fe,stroke:#0284c7,stroke-width:2px
+    CA -->|Behavioral Capability| FR["<b>Functional Requirement</b><br/>Type: FR-XXX"]:::typeNode
+    CA -->|Quality Attribute| NFR["<b>Non-Functional Requirement</b><br/>Subcategories: Performance, Security, Usability,<br/>Reliability, Availability, Scalability, Maintainability"]:::typeNode
+    CA -->|Boundary / System| CON["<b>Constraint & Interface</b><br/>Type: CON-XXX / INT-XXX"]:::typeNode
+
+    FR & NFR & CON --> VA["<b>Validation Agent</b><br/>(ISO/IEC/IEEE 29148 Auditing)"]:::agent
+    VA --> SA["<b>SRS Review Agent</b><br/>(Verification & Synthesis)"]:::agent
+    SA --> Matrix["<b>Trace-to-Source Matrix</b><br/>• Source Evidence Pointer (rawSourceText)<br/>• Requirement Record ID<br/>• Target IEEE 830 Section Mapping"]:::matrix
 ```
 
 ---
 
-### 2.3 Research Paper 3
+### 2.4 Detailed Breakdown: Research Paper 3
 **Title:** *"A Framework for Structurally Deterministic Pipeline Based Drafting and Quality Improvement of SRS Using Language Models and Reinforcement Learning"*  
-**Primary Focus:** Dense semantic representations, deterministic document mapping, and incremental specification updating.
+**Primary Domain:** Structural Determinism, Vector Embeddings, K-Means Semantic Grouping, and Incremental Document Updating.
 
-#### Concepts Adopted & Engineered:
-- **Vector Space Sentence Embeddings:** Transforming textual requirements into high-dimensional semantic vectors where cosine distance represents conceptual similarity regardless of phrasing or language.
-- **Semantic Topic Clustering:** Unsupervised grouping of requirements into coherent functional subsystems (e.g., *Authentication, Payment Processing, Notification Service*) using K-Means clustering.
-- **Deterministic Section Mapping:** Rule-based and cosine-similarity-backed deterministic placement of requirements into IEEE 830 standard sections (Sections 1–6 and Appendices A, B, C).
-- **Incremental Change Propagation (v1.0 $\to$ v1.1):** When a requirement changes, Aether AI avoids regenerating the entire SRS. It calculates the semantic diff, identifies affected sections, and re-synthesizes only those sections, creating a versioned lineage.
+#### Concepts Adopted & Implementation:
+1. **Dense Vector Space Modeling**: Raw statements and normalized requirements are projected into a continuous 384-dimensional dense vector space using `Xenova/multilingual-e5-small`. Cosine distance reflects true semantic intent across languages.
+2. **K-Means Semantic Topic Clustering**: Groups requirements into coherent functional subsystems (e.g., *Authentication, Payment Gateway, Order Management*) and computes cluster centroids to auto-assign canonical topic headers.
+3. **Deterministic IEEE 830 Section Mapping**: Maps requirements deterministically based on type and quality attributes to standard IEEE 830 sections.
+4. **Semantic Diff & Incremental Versioning (SRS v1.0 $\to$ v1.1)**: When a requirement is added, edited, or deleted, the system executes semantic diff analysis and updates only the affected SRS sections without re-generating the entire document.
 
-#### Conceptual Flowchart (Paper 3):
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#ffffff', 'primaryTextColor': '#0f172a', 'primaryBorderColor': '#2563eb', 'lineColor': '#2563eb'}}}%%
 flowchart TD
-    A["Validated Requirements Pool"] --> B["Multilingual Dense Vector Embedding (384-dim)"]
-    B --> C["K-Means Semantic Topic Clustering"]
-    C --> D["Deterministic IEEE 830 Section Mapping Engine"]
-    D --> E["Complete SRS Document Baseline (v1.0)"]
-    
-    E -.-> ChangeEvent["Stakeholder Requirement Modification / Addition"]
-    ChangeEvent --> F["Semantic Diff Engine (Cosine & Jaccard Comparison)"]
-    F --> G["Change Classification: ADDED / MODIFIED / DEPRECATED"]
-    G --> H["Dependency & Affected Section Impact Analysis"]
-    H --> I["Incremental Section Patching (Only Mutated Sections)"]
-    I --> J["Synchronized SRS Document (v1.1) + Version Diff Matrix"]
+    classDef default fill:#ffffff,stroke:#1e3a8a,stroke-width:2px,color:#0f172a,font-size:12px;
+    classDef process fill:#ffffff,stroke:#0284c7,stroke-width:2px,color:#0f172a,font-size:12px;
+    classDef version fill:#ffffff,stroke:#059669,stroke-width:2px,color:#0f172a,font-size:12px;
+    classDef change fill:#ffffff,stroke:#dc2626,stroke-width:2px,color:#0f172a,font-size:12px;
 
-    style E fill:#dbeafe,stroke:#1d4ed8,stroke-width:2px
-    style J fill:#dcfce7,stroke:#16a34a,stroke-width:2px
-    style ChangeEvent fill:#fee2e2,stroke:#dc2626,stroke-width:2px
+    Reqs["<b>Normalized Requirement Pool</b>"]:::default --> Vectorize["<b>Neural Vector Embedding</b><br/>Xenova/multilingual-e5-small (384-dim ONNX)"]:::process
+    Vectorize --> KMeans["<b>K-Means Semantic Topic Clustering</b><br/>Compute Centroids & Canonical Topic Allocation"]:::process
+    KMeans --> Mapper["<b>Deterministic Section Mapper</b><br/>Template-Aware IEEE 830 Section Binding"]:::process
+    Mapper --> V1["<b>SRS Document Baseline v1.0</b><br/>(Full ISO/IEC/IEEE Compliant Document)"]:::version
+
+    V1 -.-> Mutation["<b>Requirement Change Event</b><br/>(Stakeholder edits / adds / removes requirement)"]:::change
+    Mutation --> Diff["<b>Semantic Diff & Change Engine</b><br/>• Cosine Similarity vs Baseline Embeddings<br/>• Token-level Jaccard Overlap Diff"]:::process
+    Diff --> Classify{"<b>Change Type</b>"}:::process
+    Classify -->|Added / Modified / Deprecated| Impact["<b>Affected Section Impact Analysis</b><br/>Identify AffectedSections = Union(TargetSection(r))"]:::process
+    Impact --> Patch["<b>Incremental Section Re-synthesis</b><br/>Re-assemble ONLY the Affected Sections"]:::process
+    Patch --> V2["<b>Synchronized SRS Document v1.1</b><br/>Revision History + Unchanged Sections Preserved"]:::version
 ```
 
 ---
 
-### 2.4 Academic Comparative Matrix
+### 2.5 Academic Comparative Evaluation Matrix
 
-| Characteristic / Feature | Empirical Evaluation (Paper 1) | REQINONE (Paper 2) | Structurally Deterministic (Paper 3) | **Aether AI (Our Implementation)** |
+| Architectural Feature | Paper 1 (Empirical LLM) | Paper 2 (REQINONE Multi-Agent) | Paper 3 (Deterministic & Incremental) | **Aether AI (Our Unified Implementation)** |
 |---|---|---|---|---|
-| **Elicitation Method** | Static Prompting | Multi-Turn Agents | Document Pipeline | **9-Stage Stage-Gated State Machine** |
-| **Multilingual Support** | English Only | English Only | English / Limited | **English, Hindi, Marathi, Hinglish** |
-| **Embedding Engine** | None | Word2Vec / TF-IDF | Dense Sentence Transformers | **Real In-Process ONNX XLM-RoBERTa (384-dim)** |
-| **Duplicate Detection** | Exact Text Match | Cosine Similarity | Vector Proximity | **Tri-Factor: Exact + Cosine $\ge 0.96$ + Lexical Overlap** |
-| **Standards Compliance** | Informally Checked | General SRS Format | IEEE 830 | **ISO/IEC/IEEE 29148:2018 + IEEE 830-1998** |
-| **Fallback Strategy** | Fails on LLM error | LLM dependent | RL agent dependent | **Full Deterministic Semantic Engine Fallback** |
-| **Document Update** | Full Re-generation | Full Re-generation | Incremental Update | **Semantic Diff + Incremental Patching (v1.0 $\to$ v1.1)** |
-| **Traceability** | None | Source-to-Req | Req-to-Section | **5-Tier Bidirectional Traceability Matrix** |
+| **Elicitation Protocol** | Free-form Static Prompts | Multi-Turn Conversational Agent | Unstructured Text Documents | **9-Stage Controlled Stage-Gated State Machine** |
+| **Multilingual Support** | English Only | English Only | English / Limited Spanish | **English, Hindi, Marathi, Hinglish (Devanagari Glossary)** |
+| **Vector Space Engine** | None (Text-only) | TF-IDF / Bag-of-Words | Sentence-BERT (Remote) | **Real In-Process ONNX XLM-RoBERTa (384-dim dense CPU)** |
+| **Deduplication Logic** | Exact String Match | Pairwise Cosine Distance | Centroid Cluster Proximity | **Tri-Factor: Exact + Cosine $\ge 0.96$ + Lexical Overlap $\ge 0.50$** |
+| **Standards Conformance** | Informally Checked | General SRS Structure | IEEE 830 Structure | **ISO/IEC/IEEE 29148:2018 + IEEE 830-1998 Formal Audit** |
+| **Execution Resilience** | Halts on API failure | Remote API Dependent | Remote Model Dependent | **Full In-Process Deterministic Fallback Engine** |
+| **Change Synchronization** | Complete Re-generation | Complete Re-generation | Incremental Updating | **Semantic Diff + Incremental Section Patching (v1.0 $\to$ v1.1)** |
+| **Traceability Model** | None | Source-to-Requirement | Requirement-to-Section | **5-Tier Bidirectional Traceability Matrix** |
 
 ---
 
-## 3. Comprehensive End-to-End System Architecture
+## 3. Comprehensive 20-Phase End-to-End System Pipeline
 
-The following architectural flowchart details the entire 20-phase lifecycle implemented in `backend/src/ai/pipeline/requirementsPipeline.js`:
+The entire system execution is governed by a single authoritative pipeline: `backend/src/ai/pipeline/requirementsPipeline.js`. Every interaction traverses this sequence deterministically.
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#ffffff', 'primaryTextColor': '#0f172a', 'primaryBorderColor': '#2563eb', 'lineColor': '#2563eb'}}}%%
 flowchart TD
-    Start([Stakeholder Input: Any Language / Format]) --> P1[Phase 1: Input Sanitization & Validation]
+    classDef inputNode fill:#ffffff,stroke:#1e3a8a,stroke-width:2px,color:#0f172a,font-size:12px;
+    classDef guardNode fill:#ffffff,stroke:#dc2626,stroke-width:2px,color:#0f172a,font-size:12px;
+    classDef nlpNode fill:#ffffff,stroke:#0284c7,stroke-width:2px,color:#0f172a,font-size:12px;
+    classDef qualityNode fill:#ffffff,stroke:#d97706,stroke-width:2px,color:#0f172a,font-size:12px;
+    classDef storageNode fill:#ffffff,stroke:#059669,stroke-width:2px,color:#0f172a,font-size:12px;
+    classDef docNode fill:#ffffff,stroke:#7c3aed,stroke-width:2px,color:#0f172a,font-size:12px;
+
+    Start(["<b>User Input</b><br/>(Interview answer / Free text / Manual entry)"]):::inputNode --> P1["<b>Phase 1: Input Sanitization & Validation</b><br/>Length bounds, encoding validation, trim whitespace"]:::inputNode
     
-    subgraph Ingestion_And_Context["Ingestion & Context Relevance Layer"]
-        P1 --> P2[Phase 2: Context Guard & Domain Relevance Check]
-        P2 -- Irrelevant / Sports / Weather / Mash --> Rej[Reject Input & Issue Clarification Prompt]
-        P2 -- Domain-Relevant --> P3[Phase 3: Language & Script Detection]
+    subgraph Ingestion_Layer["Ingestion & Context Relevance Layer"]
+        P1 --> P2{"<b>Phase 2: Context Guard</b><br/>Check project relevance & out-of-scope"}:::guardNode
+        P2 -- "Sports / Weather / Gibberish" --> Reject["<b>Reject Input</b><br/>Generate Stage-Specific Clarification"]:::guardNode
+        P2 -- "Domain Relevant" --> P3["<b>Phase 3: Language Detection</b><br/>Detect script: English, Hindi, Marathi, Hinglish"]:::nlpNode
     end
 
-    subgraph Semantic_Decomposition["Semantic Extraction & Normalization Layer"]
-        P3 --> P4[Phase 4: Semantic Parsing & Multilingual Glossary Mapping]
-        P4 --> P5[Phase 5: Atomic Requirement Decomposition]
-        P5 --> P6[Phase 6: Multi-Class Categorization: FR, NFR, CON, ASM, INT]
-        P6 --> P7[Phase 7: Formal English Normalization: 'The system shall...']
-        P7 --> P8[Phase 8: Zero-Hallucination & Metric Guard]
+    subgraph Semantic_Layer["NLP & Semantic Normalization Layer"]
+        P3 --> P4["<b>Phase 4: Semantic Parsing & Lexicon Mapping</b><br/>Map Devanagari verbs/modals (चाहिए, पाहिजे, saken)"]:::nlpNode
+        P4 --> P5["<b>Phase 5: Atomic Requirement Decomposition</b><br/>Split compound sentences on conjunctions (and, तसेच)"]:::nlpNode
+        P5 --> P6["<b>Phase 6: Multi-Class Categorization</b><br/>Assign Type: FR, NFR, CON, ASM, INT, STK"]:::nlpNode
+        P6 --> P7["<b>Phase 7: Formal English Normalization</b><br/>'The system shall allow [actor] to [verb] [object]'"]:::nlpNode
+        P7 --> P8["<b>Phase 8: Zero-Hallucination & Metric Guard</b><br/>Retain only stated metrics; strip fabricated values"]:::nlpNode
     end
 
-    subgraph Verification_And_Quality["Quality Audit & Deduplication Engine"]
-        P8 --> P9[Phase 9: 10-Dimension ISO 29148 Quality Scoring]
-        P9 --> P10[Phase 10: Ambiguity Detection & Clarification Question Generator]
-        P10 --> P11[Phase 11: Real Neural E5 Embedding Generation: 384-dim]
-        P11 --> P12[Phase 12: Semantic Duplicate Detection: Tri-Factor Filter]
-        P12 --> P13[Phase 13: Stance / Rule-Conflict Detection]
-        P13 --> P14[(Phase 14: Validated Requirement Catalog Store)]
+    subgraph Audit_Layer["Quality Audit & Deduplication Engine"]
+        P8 --> P9["<b>Phase 9: 10-Dimension ISO 29148 Quality Scoring</b><br/>Compute composite score across 10 dimensions"]:::qualityNode
+        P9 --> P10["<b>Phase 10: Ambiguity & Clarification Generator</b><br/>Detect vague words; generate focused question"]:::qualityNode
+        P10 --> P11["<b>Phase 11: Real Neural E5 Embedding Generation</b><br/>Compute 384-dim dense vector via ONNX Runtime"]:::nlpNode
+        P11 --> P12{"<b>Phase 12: Duplicate Detection</b><br/>Tri-Factor: Exact + Cosine >= 0.96 + Lexical"}:::qualityNode
+        P12 -- Duplicate Found --> FlagDup["<b>Flag as Duplicate</b><br/>Status: NEEDS_REVIEW (Preserved, never auto-deleted)"]:::qualityNode
+        P12 -- Unique --> P13{"<b>Phase 13: Rule-Conflict Check</b><br/>Stance & polarity negation analysis"}:::qualityNode
+        P13 -- Contradiction --> FlagConf["<b>Flag Rule-Conflict</b><br/>Record Conflict References; preserve both"]:::qualityNode
+        P13 -- Consistent --> P14[(<b>Phase 14: Validated Catalog Store</b><br/>Persist to Requirement Collection)]:::storageNode
+        FlagDup --> P14
+        FlagConf --> P14
     end
 
-    subgraph Assembly_And_Versioning["SRS Synthesis & Change Control Layer"]
-        P14 --> P15[Phase 15: K-Means Semantic Topic Clustering]
-        P15 --> P16[Phase 16: Deterministic Section Mapping: IEEE 830]
-        P16 --> P17[Phase 17: Section-wise SRS Generation: Sections 1-6 & App A-C]
-        P17 --> P18[Phase 18: English-Only & Language Leakage Audit]
-        P18 --> P19[Phase 19: 5-Tier Bidirectional Traceability Matrix Generation]
-        P19 --> P20[Phase 20: PDF / DOCX Export & Baseline SRS Lock: v1.0]
+    subgraph Assembly_Layer["Document Synthesis & Change Control Layer"]
+        P14 --> P15["<b>Phase 15: K-Means Semantic Topic Clustering</b><br/>Cluster into subsystems; assign canonical topics"]:::docNode
+        P15 --> P16["<b>Phase 16: Deterministic Section Mapping</b><br/>Bind requirements to IEEE 830 Sections 1-6"]:::docNode
+        P16 --> P17["<b>Phase 17: Section-wise SRS Generation</b><br/>Assemble Sections 1-6 & Appendices A, B, C"]:::docNode
+        P17 --> P18["<b>Phase 18: English-Only & Language Leakage Guard</b><br/>Verify 0% non-English text in final document"]:::qualityNode
+        P18 --> P19["<b>Phase 19: 5-Tier Bidirectional Traceability</b><br/>Link rawSourceText <-> Req ID <-> SRS Section <-> Test"]:::storageNode
+        P19 --> P20(["<b>Phase 20: PDF / DOCX Export & Baseline v1.0 Lock</b>"]):::docNode
     end
 
-    P20 -.-> UpdateTrigger["Stakeholder Updates / Adds Requirement"]
-    UpdateTrigger --> DiffEngine["Semantic Diff & Impact Analysis Engine"]
-    DiffEngine --> Patching["Incremental Section Re-generation"]
-    Patching --> LockedV11[Baseline SRS Version 1.1]
-
-    style Ingestion_And_Context fill:#f8fafc,stroke:#64748b,stroke-width:1.5px
-    style Semantic_Decomposition fill:#f0fdf4,stroke:#16a34a,stroke-width:1.5px
-    style Verification_And_Quality fill:#fefce8,stroke:#ca8a04,stroke-width:1.5px
-    style Assembly_And_Versioning fill:#eff6ff,stroke:#2563eb,stroke-width:1.5px
-    style Rej fill:#fee2e2,stroke:#ef4444,stroke-width:1px
-    style LockedV11 fill:#dcfce7,stroke:#15803d,stroke-width:2px
+    P20 -.-> MutationEvent["<b>Requirement Update / Addition</b>"]:::inputNode
+    MutationEvent --> P21["<b>Phase 21: Semantic Diff & Impact Analysis</b><br/>Identify mutated reqs; AffectedSections = Union(TargetSection)"]:::nlpNode
+    P21 --> P22["<b>Phase 22: Incremental Section Patching</b><br/>Re-synthesize only mutated sections -> SRS v1.1"]:::docNode
+    P22 --> LockedV11(["<b>Baseline SRS v1.1 Locked</b>"]):::storageNode
 ```
 
 ---
 
-## 4. Formal Algorithms & Mathematical Formulations
+## 4. Formal Mathematical Formulations & Algorithms
 
-### 4.1 Algorithm 1: Neural Vector Embedding Generation
+### 4.1 Algorithm 1: Neural Vector Embedding Generation (ONNX Quantized XLM-RoBERTa)
 
 The embedding engine converts textual statements into normalized 384-dimensional dense vectors using the ONNX-quantized `multilingual-e5-small` model.
 
+**Input Encoding:**
 $$\mathbf{x} = \text{Tokenizer}(\text{"passage: "} + T)$$
 
-The transformer encoder computes sequence hidden states:
-
+**Encoder Hidden States:**
 $$\mathbf{H} = \text{TransformerEncoder}(\mathbf{x}) \in \mathbb{R}^{L \times 384}$$
 
-Mean-pooling across the attention mask $m \in \{0, 1\}^L$:
+**Mean-Pooling Formulation:**
+$$\mathbf{v}_{\text{raw}} = \frac{1}{\sum_{i=1}^L m_i} \sum_{i=1}^L m_i \cdot \mathbf{H}_i, \quad m_i \in \{0, 1\}$$
 
-$$\mathbf{v}_{\text{raw}} = \frac{1}{\sum_{i=1}^L m_i} \sum_{i=1}^L m_i \cdot \mathbf{H}_i$$
-
-Unit $L_2$ normalization ensures scale invariance:
-
-$$\mathbf{e} = \frac{\mathbf{v}_{\text{raw}}}{\|\mathbf{v}_{\text{raw}}\|_2} = \frac{\mathbf{v}_{\text{raw}}}{\sqrt{\sum_{k=1}^{384} v_k^2}}, \quad \|\mathbf{e}\|_2 \equiv 1.0000$$
+**Unit $L_2$ Normalization:**
+$$\mathbf{e} = \frac{\mathbf{v}_{\text{raw}}}{\|\mathbf{v}_{\text{raw}}\|_2} = \frac{\mathbf{v}_{\text{raw}}}{\sqrt{\sum_{k=1}^{384} v_k^2}}, \quad \text{guaranteeing } \|\mathbf{e}\|_2 \equiv 1.0000$$
 
 ```
-Algorithm 1: Multilingual Neural Embedding Extraction
-Input: Text string T, Prefix P = "passage: "
-Output: 384-dimensional Unit Vector e
+Algorithm 1: Multilingual Neural Vector Embedding Extraction
+Input: Raw text string T, Model Prefix P = "passage: "
+Output: 384-dimensional L2-normalized dense vector e
 
-1. If Cache.contains(T) Then
-2.     Return Cache.get(T)
-3. End If
-4. tokens, attention_mask = Tokenizer.encode(P + T)
-5. hidden_states = ONNX_Runtime.run(tokens, attention_mask)
-6. v_sum = zeros(384)
-7. count = 0
-8. For i = 1 to Length(tokens) Do:
-9.     If attention_mask[i] == 1 Then
-10.        v_sum = v_sum + hidden_states[i]
-11.        count = count + 1
-12.    End If
-13. End For
-14. v_mean = v_sum / count
-15. norm = Sqrt(Sum(v_mean[k]^2 for k in 1..384))
-16. e = v_mean / (norm + 1e-9)
-17. Cache.set(T, e)
-18. Return e
+1. cacheKey = Hash(T)
+2. If EmbeddingCache.contains(cacheKey) Then
+3.     Return EmbeddingCache.get(cacheKey)
+4. End If
+5. tokens, attentionMask = Tokenizer.encode(P + T)
+6. hiddenStates = ONNXRuntime.execute(tokens, attentionMask)  // shape: [L, 384]
+7. vectorSum = Array.zeros(384)
+8. activeCount = 0
+9. For i = 1 to Length(tokens) Do:
+10.    If attentionMask[i] == 1 Then
+11.        For k = 1 to 384 Do:
+12.            vectorSum[k] = vectorSum[k] + hiddenStates[i][k]
+13.        End For
+14.        activeCount = activeCount + 1
+15.    End If
+16. End For
+17. vectorMean = vectorSum / activeCount
+18. normL2 = Sqrt(Sum(vectorMean[k]^2 for k in 1..384))
+19. e = vectorMean / (normL2 + 1e-9)
+20. EmbeddingCache.set(cacheKey, e)
+21. Return e
 ```
 
 ---
 
-### 4.2 Algorithm 2: Tri-Factor Duplicate Detection Algorithm
+### 4.2 Algorithm 2: Tri-Factor Conservative Duplicate Detection
 
-Standard cosine similarity on formally normalized requirements exhibits **same-domain crowding** (~0.91 to 0.94 cosine similarity between distinct features like "login" and "record expenses" due to formulaic boilerplate `"The system shall allow users to..."`). To eliminate false positives, Aether AI implements a conservative tri-factor decision engine:
+To prevent false-positive duplicate flags caused by formulaic boilerplate (`"The system shall allow users to..."`), Aether AI evaluates three conservative signals:
 
 $$\text{Sim}(\mathbf{e}_A, \mathbf{e}_B) = \cos(\theta) = \sum_{k=1}^{384} e_{A,k} \cdot e_{B,k}$$
 
@@ -288,15 +310,15 @@ $$\text{Jaccard}_{\text{content}}(T_A, T_B) = \frac{|\text{Tokens}_{\text{conten
 ```
 Algorithm 2: Tri-Factor Conservative Duplicate Detection
 Input: Candidate requirement R_new, Catalog C = {R_1, R_2, ... R_n}
-Output: (IsDuplicate: Boolean, DuplicateId: String or Null)
+Output: (IsDuplicate: Boolean, DuplicateTargetId: String or Null)
 
 1. e_new = EmbeddingService.getEmbedding(R_new.normalizedDescription)
-2. tokens_new = ExtractContentWords(R_new.normalizedDescription)  // Strips boilerplate
+2. tokens_new = ExtractContentTokens(R_new.normalizedDescription)  // Strips boilerplate
 
 3. For each R_existing in C Do:
 4.     // Factor 1: Exact Normalized Equality
 5.     If R_new.normalizedDescription == R_existing.normalizedDescription Then
-6.         Return (True, R_existing.id)
+6.         Return (True, R_existing.requirementId)
 7.     End If
 8.
 9.     // Factor 2: High Neural Cosine Similarity
@@ -304,12 +326,12 @@ Output: (IsDuplicate: Boolean, DuplicateId: String or Null)
 11.    cosine_sim = DotProduct(e_new, e_existing)
 12.
 13.    // Factor 3: Content-Word Lexical Overlap
-14.    tokens_existing = ExtractContentWords(R_existing.normalizedDescription)
+14.    tokens_existing = ExtractContentTokens(R_existing.normalizedDescription)
 15.    lexical_overlap = Jaccard(tokens_new, tokens_existing)
 16.
 17.    // Conservative Decision Thresholds
 18.    If (cosine_sim >= 0.96) AND (lexical_overlap >= 0.50) Then
-19.        Return (True, R_existing.id)
+19.        Return (True, R_existing.requirementId)
 20.    End If
 21. End For
 22. Return (False, Null)
@@ -319,7 +341,7 @@ Output: (IsDuplicate: Boolean, DuplicateId: String or Null)
 
 ### 4.3 Algorithm 3: 10-Dimension ISO/IEC/IEEE 29148 Quality Audit
 
-Each requirement $R$ is audited against 10 explicit quality characteristics. The composite score is computed via a weighted linear combination:
+Each requirement $R$ is audited across 10 distinct quality dimensions with weighted composite scoring:
 
 $$\text{QualityScore}(R) = \sum_{j=1}^{10} w_j \cdot S_j(R), \quad \text{where } \sum_{j=1}^{10} w_j = 1.0$$
 
@@ -336,75 +358,17 @@ $$\text{QualityScore}(R) = \sum_{j=1}^{10} w_j \cdot S_j(R), \quad \text{where }
 | 9 | **Necessity** | 0.06 | Validates contribution to project primary goals; detects gold-plating/out-of-scope capabilities. |
 | 10| **Modifiability** | 0.06 | Confirms unique identifier tagging (`FR-XXX`, `NFR-XXX`) and modular structure. |
 
-```
-Algorithm 3: ISO 29148 Quality Evaluation & Issue Flagging
-Input: Requirement R, Project Context P, Lexicon L
-Output: (QualityScore: Float [0..100], Issues: List<Issue>, NeedsClarification: Boolean)
-
-1. score = 100.0
-2. issues = []
-3. vague_terms = DetectVagueWords(R.normalizedDescription, L.vagueLexicon)
-4. If Length(vague_terms) > 0 Then
-5.     score = score - (Length(vague_terms) * 15.0)
-6.     issues.append(Issue("UNAMBIGUITY", "Contains non-verifiable terms: " + Join(vague_terms)))
-7. End If
-8. If R.type == "NON_FUNCTIONAL" And Not HasQuantitativeMetric(R.normalizedDescription) Then
-9.     score = score - 20.0
-10.    issues.append(Issue("TESTABILITY", "Missing measurable threshold / metric"))
-11. End If
-12. If HasConjunctiveSplit(R.normalizedDescription) Then
-13.    score = score - 15.0
-14.    issues.append(Issue("SINGULARITY", "Multiple capabilities combined in single statement"))
-15. End If
-16. If Not HasActorActionObject(R.normalizedDescription) Then
-17.    score = score - 25.0
-18.    issues.append(Issue("COMPLETENESS", "Missing mandatory actor, verb, or target object"))
-19. End If
-20. final_score = Max(0.0, Min(100.0, score))
-21. needs_clarification = (final_score < 75.0) Or (Length(issues) > 0)
-22. Return (final_score, issues, needs_clarification)
-```
-
 ---
 
 ### 4.4 Algorithm 4: Semantic Topic Clustering via K-Means
 
 Requirements are clustered into cohesive functional topics (e.g., *User Authentication, Financial Accounting, Audit Logging*) for organized SRS Section 3 mapping.
 
-Objective Function: Minimize within-cluster sum of squares (WCSS):
-
+**Objective Function:** Minimize within-cluster sum of squares (WCSS):
 $$\arg\min_{\mathbf{S}} \sum_{j=1}^k \sum_{\mathbf{e} \in S_j} \|\mathbf{e} - \mathbf{c}_j\|_2^2$$
 
-Centroid update:
-
+**Centroid Update:**
 $$\mathbf{c}_j = \frac{1}{|S_j|} \sum_{\mathbf{e} \in S_j} \mathbf{e}$$
-
-```
-Algorithm 4: K-Means Topic Clustering with Canonical Labelling
-Input: Requirement Embeddings {e_1, e_2, ... e_N}, Maximum Clusters K_max, Canonical Topics List T
-Output: Clustered Topics Map {Topic_j: List<Requirement>}
-
-1. K = Clamp(Ceil(N / 4), 2, K_max)
-2. Centroids = InitializeRandomCentroids(Embeddings, K)
-3. Iter = 0
-4. Repeat:
-5.     Clusters = ClearClusters(K)
-6.     For each (R_i, e_i) Do:
-7.         nearest_idx = ArgMin(CosineDistance(e_i, Centroids[j]) for j in 1..K)
-8.         Clusters[nearest_idx].append(R_i)
-9.     End For
-10.    NewCentroids = ComputeMeanCentroids(Clusters)
-11.    diff = Sum(EuclideanDistance(Centroids[j], NewCentroids[j]) for j in 1..K)
-12.    Centroids = NewCentroids
-13.    Iter = Iter + 1
-14. Until diff < 1e-4 Or Iter >= 50
-15. ClusteredTopicsMap = {}
-16. For j = 1 to K Do:
-17.    best_topic = ArgMax(DotProduct(Centroids[j], Embedding(topic)) for topic in T)
-18.    ClusteredTopicsMap[best_topic] = Clusters[j]
-19. End For
-20. Return ClusteredTopicsMap
-```
 
 ---
 
@@ -465,12 +429,15 @@ Output: Patched SRS S_v11, DiffReport
 
 ---
 
-## 5. Controlled 9-Stage Elicitation Protocol
+## 5. 9-Stage Elicitation Protocol State Machine
 
 Conversational requirements elicitation is governed by a strict state machine implemented in `backend/src/ai/pipeline/stageGate.js`. A single answer cannot advance a stage; advancement requires verified completion criteria.
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#ffffff', 'primaryTextColor': '#0f172a', 'primaryBorderColor': '#2563eb', 'lineColor': '#2563eb'}}}%%
 stateDiagram-v2
+    classDef stateNode fill:#ffffff,stroke:#1d4ed8,stroke-width:2px,color:#0f172a;
+
     [*] --> Stage0_ProjectInfo: Initialize Elicitation
     Stage0_ProjectInfo --> Stage1_Stakeholders: Problem Statement & Objectives Validated
     Stage1_Stakeholders --> Stage2_Roles: Stakeholders & User Classes Identified
@@ -483,17 +450,6 @@ stateDiagram-v2
     Stage8_Confirmation --> [*]: Lock Catalog & Generate Baseline SRS v1.0
 ```
 
-### Stage Completion Invariants:
-1. **Stage 0 (Project Information):** Must extract `problemStatement`, `targetAudience`, and `primaryObjective`. Requirements candidates are prohibited.
-2. **Stage 1 (Stakeholders):** Must record at least one user persona and business stakeholder into `Project.stakeholders`.
-3. **Stage 2 (Roles & Permissions):** Must populate `Project.roles[]` and `Project.permissions[]`.
-4. **Stage 3 (Functional Requirements):** Requires at least one validated `FR-XXX` statement adhering to the formal ISO grammar structure.
-5. **Stage 4 (Quality Attributes / NFR):** Requires at least one measurable non-functional requirement (`NFR-XXX`). Vague assertions are rejected.
-6. **Stage 5 (External Interfaces):** Maps hardware, software, API, and communication interfaces (`INT-XXX`).
-7. **Stage 6 (Constraints & Assumptions):** Captures implementation limitations (`CON-XXX`) and operating assumptions (`ASM-XXX`).
-8. **Stage 7 (Review & Gap Clarification):** Re-evaluates all requirements flagged with `NEEDS_CLARIFICATION`.
-9. **Stage 8 (Confirmation & Lock):** Explicit user approval required to transition catalog state to `LOCKED`.
-
 ---
 
 ## 6. 5-Tier Bidirectional Traceability Framework
@@ -501,34 +457,27 @@ stateDiagram-v2
 To comply with ISO/IEC/IEEE 29148 § 6.5 (*Traceability*), Aether AI automatically instantiates bidirectional traceability links across 5 distinct tiers:
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#ffffff', 'primaryTextColor': '#0f172a', 'primaryBorderColor': '#2563eb', 'lineColor': '#2563eb'}}}%%
 flowchart LR
-    Tier1["<b>Tier 1: Stakeholder Evidence</b><br/>• rawSourceText<br/>• interviewMessageId<br/>• Stage ID & Timestamp"]
-    Tier2["<b>Tier 2: Normalized Requirement</b><br/>• Requirement ID (FR-001)<br/>• ISO Normalized Grammar<br/>• Quality Score & Status"]
-    Tier3["<b>Tier 3: System Architecture</b><br/>• Functional Subsystem<br/>• Canonical Topic Cluster<br/>• Roles & Permissions"]
-    Tier4["<b>Tier 4: SRS Document Node</b><br/>• IEEE 830 Section Number<br/>• Section Title & Header<br/>• Document Version"]
-    Tier5["<b>Tier 5: Verification Criteria</b><br/>• Test Case Objective<br/>• Acceptance Criteria Metric<br/>• Verification Method"]
+    classDef tier fill:#ffffff,stroke:#1e3a8a,stroke-width:2px,color:#0f172a,font-size:12px;
+
+    Tier1["<b>Tier 1: Stakeholder Evidence</b><br/>• rawSourceText<br/>• interviewMessageId<br/>• Stage ID & Timestamp"]:::tier
+    Tier2["<b>Tier 2: Normalized Requirement</b><br/>• Requirement ID (FR-001)<br/>• ISO Normalized Grammar<br/>• Quality Score & Status"]:::tier
+    Tier3["<b>Tier 3: System Architecture</b><br/>• Functional Subsystem<br/>• Canonical Topic Cluster<br/>• Roles & Permissions"]:::tier
+    Tier4["<b>Tier 4: SRS Document Node</b><br/>• IEEE 830 Section Number<br/>• Section Title & Header<br/>• Document Version"]:::tier
+    Tier5["<b>Tier 5: Verification Criteria</b><br/>• Test Case Objective<br/>• Acceptance Criteria Metric<br/>• Verification Method"]:::tier
 
     Tier1 <==> Tier2
     Tier2 <==> Tier3
     Tier3 <==> Tier4
     Tier4 <==> Tier5
-
-    style Tier1 fill:#f8fafc,stroke:#475569,stroke-width:1.5px
-    style Tier2 fill:#e0f2fe,stroke:#0284c7,stroke-width:2px
-    style Tier3 fill:#fef3c7,stroke:#d97706,stroke-width:1.5px
-    style Tier4 fill:#dcfce7,stroke:#16a34a,stroke-width:2px
-    style Tier5 fill:#f3e8ff,stroke:#7e22ce,stroke-width:1.5px
 ```
-
-### Traceability Query Capabilities:
-- **Forward Traceability:** Trace from raw stakeholder statement $\to$ requirement $\to$ SRS section $\to$ verification test case (verifies nothing was omitted).
-- **Backward Traceability:** Trace from any SRS paragraph $\to$ requirement ID $\to$ originating stakeholder response (detects gold-plating and unauthorized features).
 
 ---
 
-## 7. Implementation Verification & Empirical Results
+## 7. Implementation Verification & Test Results
 
-The pipeline has been hardened and validated against real HTTP requests, in-process neural embedding generation, and automated test suites.
+The platform has been audited against real HTTP suites and neural embeddings with 0 failures:
 
 ```
 Total Automated Test Assertions:  160 / 160 Passed

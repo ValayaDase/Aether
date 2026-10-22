@@ -10,7 +10,7 @@ An enterprise AI-powered Software Requirements Engineering platform adhering str
    - Real-time atomic requirement extraction (`FR-XXX`, `NFR-XXX`, `CON-XXX`, `ASM-XXX`, `INT-XXX`, `STK-XXX`).
 2. **Quality & Ambiguity Audit**:
    - Heuristic non-verifiable words detection and semantic conflict analysis.
-   - Vector-based Cosine Similarity deduplication (`BAAI/bge-small-en-v1.5`).
+   - Vector-based Cosine Similarity deduplication (`Xenova/multilingual-e5-small`).
 3. **ISO/IEC/IEEE 29148 Verification**:
    - Completeness, consistency, singularity, and testability scoring.
 4. **Exact-Template SRS Generation & Export**:
@@ -54,6 +54,6 @@ npm run dev
 
 ### 3. Generate Research Architecture PDF
 ```bash
-node backend/src/scripts/generateReportPdf.js
+node backend/scripts/generateReportPdf.js
 ```
 
