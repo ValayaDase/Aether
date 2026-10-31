@@ -101,10 +101,10 @@ export default function NewProjectPage() {
               </div>
 
               <div className="space-y-1.5 md:col-span-2">
-                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Project Description</label>
+                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">What do you want to build?</label>
                 <textarea
                   rows={3}
-                  placeholder="Briefly explain the high-level business goal and user value proposition..."
+                  placeholder="Describe what your software should do and which problem it solves...."
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   className="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-900 text-sm focus:border-blue-500 focus:outline-none placeholder:text-slate-400 shadow-sm"
@@ -112,10 +112,10 @@ export default function NewProjectPage() {
               </div>
 
               <div className="space-y-1.5 md:col-span-2">
-                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Project Scope</label>
+                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">	What should the system include?</label>
                 <textarea
                   rows={2}
-                  placeholder="Specify system boundaries (what is IN scope vs OUT of scope)..."
+                  placeholder="e.g. Room booking, check-in, payments, customer management...."
                   value={formData.scope}
                   onChange={(e) => setFormData({ ...formData, scope: e.target.value })}
                   className="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-900 text-sm focus:border-blue-500 focus:outline-none placeholder:text-slate-400 shadow-sm"
@@ -134,7 +134,7 @@ export default function NewProjectPage() {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Target Users (comma-separated)</label>
+                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Target Users</label>
                 <input
                   type="text"
                   placeholder="e.g. Students, Faculty, Administrators"
@@ -145,10 +145,10 @@ export default function NewProjectPage() {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Stakeholders (comma-separated)</label>
+                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">	Who is involved in this project?</label>
                 <input
                   type="text"
-                  placeholder="e.g. Dean of Students, Campus Security, IT Dept"
+                  placeholder="e.g. Hotel Owner, Manager, Receptionist"
                   value={formData.stakeholders}
                   onChange={(e) => setFormData({ ...formData, stakeholders: e.target.value })}
                   className="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-900 text-sm focus:border-blue-500 focus:outline-none placeholder:text-slate-400 shadow-sm"
@@ -156,10 +156,10 @@ export default function NewProjectPage() {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Objectives (comma-separated)</label>
+                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">What are your main goals?</label>
                 <input
                   type="text"
-                  placeholder="e.g. Reduce wait times, Automate scheduling"
+                  placeholder="e.g. Automate bookings, reduce manual work, manage rooms."
                   value={formData.objectives}
                   onChange={(e) => setFormData({ ...formData, objectives: e.target.value })}
                   className="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-900 text-sm focus:border-blue-500 focus:outline-none placeholder:text-slate-400 shadow-sm"
@@ -167,10 +167,10 @@ export default function NewProjectPage() {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Design & Tech Constraints</label>
+                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Technology or Design Requirements</label>
                 <input
                   type="text"
-                  placeholder="e.g. Must run in modern browsers, GDPR compliant"
+                  placeholder="Requirements	e.g. MERN Stack, responsive website, secure login."
                   value={formData.constraints}
                   onChange={(e) => setFormData({ ...formData, constraints: e.target.value })}
                   className="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-900 text-sm focus:border-blue-500 focus:outline-none placeholder:text-slate-400 shadow-sm"
@@ -178,10 +178,10 @@ export default function NewProjectPage() {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Assumptions & Dependencies</label>
+                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Any existing systems or requirements?</label>
                 <input
                   type="text"
-                  placeholder="e.g. University LDAP active, 99.9% network availability"
+                  placeholder="e.g. Existing payment gateway, email service, database."
                   value={formData.assumptions}
                   onChange={(e) => setFormData({ ...formData, assumptions: e.target.value })}
                   className="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-900 text-sm focus:border-blue-500 focus:outline-none placeholder:text-slate-400 shadow-sm"
@@ -203,7 +203,7 @@ export default function NewProjectPage() {
                 className="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-sm transition-all flex items-center gap-2"
               >
                 <Sparkles className="w-4 h-4 text-white" />
-                <span className="text-white font-bold">{loading ? 'Creating Project...' : 'Create & Launch AI Interview'}</span>
+                <span className="text-white font-bold">{loading ? 'Creating Project...' : 'Continue to AI Requirement Interview'}</span>
               </button>
             </div>
           </form>

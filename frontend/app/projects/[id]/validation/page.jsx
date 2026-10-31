@@ -182,16 +182,16 @@ export default function ValidationPage() {
   const mismatchCount = requirements.filter(r => r.contextRelevance?.status === 'CONTEXT_MISMATCH').length;
 
   const DIMENSIONS_LIST = [
-    { key: 'specific', label: 'Specific' },
-    { key: 'complete', label: 'Complete' },
-    { key: 'unambiguous', label: 'Unambiguous' },
-    { key: 'consistent', label: 'Consistent' },
-    { key: 'feasible', label: 'Feasible' },
-    { key: 'verifiable', label: 'Verifiable' },
-    { key: 'necessary', label: 'Necessary' },
-    { key: 'traceable', label: 'Traceable' },
-    { key: 'measurable', label: 'Measurable' },
-    { key: 'projectContextRelevance', label: 'Context Relevance' }
+    { key: 'specific', label: 'Specific', desc: 'Clearly explains what to do.' },
+    { key: 'complete', label: 'Complete', desc: 'Includes all required details.' },
+    { key: 'unambiguous', label: 'Unambiguous', desc: 'Has only one clear meaning.' },
+    { key: 'consistent', label: 'Consistent', desc: 'Does not conflict with other requirements.' },
+    { key: 'feasible', label: 'Feasible', desc: 'Can actually be done.' },
+    { key: 'verifiable', label: 'Verifiable', desc: 'Can be checked or tested.' },
+    { key: 'necessary', label: 'Necessary', desc: 'Needed for the project.' },
+    { key: 'traceable', label: 'Traceable', desc: 'Connected to related features.' },
+    { key: 'measurable', label: 'Measurable', desc: 'Success can be measured.' },
+    { key: 'projectContextRelevance', label: 'Context Relevance', desc: 'Related to the project goal.' }
   ];
 
   return (
@@ -275,7 +275,7 @@ export default function ValidationPage() {
           <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
             <div className="p-6 border-b border-slate-800 flex items-center justify-between">
               <div>
-                <h3 className="text-base font-bold text-white tracking-tight">10-Dimension ISO 29148 Validation Matrix</h3>
+                <h3 className="text-base font-bold text-white tracking-tight">10-Dimension Validation Matrix</h3>
                 <p className="text-xs text-slate-400">
                   Comprehensive audit assessing specific, complete, unambiguous, consistent, feasible, verifiable, necessary, traceable, measurable quality, and project context relevance.
                 </p>
@@ -338,18 +338,30 @@ export default function ValidationPage() {
                           ISO 29148 Quality & Relevance Dimensions
                         </div>
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
-                          {DIMENSIONS_LIST.map(({ key, label }) => {
+                          {DIMENSIONS_LIST.map(({ key, label, desc }) => {
                             const passed = dims[key] !== false;
                             return (
                               <div
                                 key={key}
-                                className={`px-2.5 py-1.5 rounded-lg border text-[11px] font-bold flex items-center justify-between ${passed
-                                  ? 'bg-emerald-100 border-emerald-300 text-emerald-950'
-                                  : 'bg-rose-100 border-rose-300 text-rose-950'
-                                  }`}
+                                className={`px-2.5 py-2 rounded-lg border flex flex-col justify-between gap-1 ${
+                                  passed
+                                    ? "bg-emerald-100 border-emerald-300 text-emerald-950"
+                                    : "bg-rose-100 border-rose-300 text-rose-950"
+                                }`}
                               >
-                                <span>{label}</span>
-                                {passed ? <Check className="w-3.5 h-3.5 text-emerald-700 stroke-[3]" /> : <X className="w-3.5 h-3.5 text-rose-700 stroke-[3]" />}
+                                <div className="flex items-center justify-between gap-1">
+                                  <span className="text-[11px] font-bold">{label}</span>
+                                  {passed ? (
+                                    <Check className="w-3.5 h-3.5 text-emerald-700 stroke-[3] shrink-0" />
+                                  ) : (
+                                    <X className="w-3.5 h-3.5 text-rose-700 stroke-[3] shrink-0" />
+                                  )}
+                                </div>
+                                <p className={`text-[10px] font-normal leading-snug ${
+                                  passed ? "text-emerald-900" : "text-rose-900"
+                                }`}>
+                                  {desc}
+                                </p>
                               </div>
                             );
                           })}
